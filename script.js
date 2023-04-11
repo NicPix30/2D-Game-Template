@@ -102,9 +102,9 @@ var tick = function () {
   } else if (keyDown['down']) {
     // down code
   } else if (keyDown['left']) {
-    player1.position.x -= 10;
+    player1.position.x -= 12;
   } else if (keyDown['right']) {
-    player1.position.x += 10;
+    player1.position.x += 12;
   }
 
   setTimeout(tick, TickRate);
