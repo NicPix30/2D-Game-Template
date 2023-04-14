@@ -30,12 +30,13 @@ class Sprite {
 }
 
 class Player {
-  constructor({ position, size, imageSrc }) {
+  constructor({ position, size, imageSrc, physics }) {
     this.image = new Image();
     this.image.src = imageSrc;
     this.position = position;
     this.size = size;
     this.imageSrc = imageSrc;
+    this.physics = physics;
   }
   draw() {
     c.drawImage(
@@ -66,13 +67,20 @@ const backgroundLevel1 = new Sprite({
 const player1 = new Player({
   position: {
     x: canvas.width / 2,
-    y: 362,
+    y: canvas.height / 1.7,
   },
   imageSrc:
     'https://cdn.jsdelivr.net/gh/NicPix30/2D-Game-Template@main/box.png',
   size: {
-    width: 50,
-    height: 50,
+    width: canvas.width / 20,
+    height: canvas.height / 20,
+  },
+  physics: {
+    friction: 2,
+    velocity: 0,
+    acceloraction: 1,
+    minspeed: 0.2,
+    maxspeed: 13,
   },
 });
 
@@ -83,34 +91,62 @@ const TickRate = 30,
   keyDown = {},
   keyMap = {
     87: 'up',
+    38: 'up',
+    37: 'left',
     65: 'left',
+    40: 'down',
     83: 'down',
+    39: 'right',
     68: 'right',
   };
 
+let keyPressed = false;
 window.addEventListener('keydown', (event) => {
   keyDown[keyMap[event.which]] = true;
+  keyPressed = true;
 });
 
 window.addEventListener('keyup', (event) => {
   keyDown[keyMap[event.which]] = false;
+  keyPressed = false;
 });
 
-var tick = function () {
+var PhysicsUpdateLoop = function () {
   if (keyDown['up']) {
     // up code
   } else if (keyDown['down']) {
     // down code
-  } else if (keyDown['left']) {
-    player1.position.x -= 12;
-  } else if (keyDown['right']) {
-    player1.position.x += 12;
+  } else if (keyDown['left'] && !keyDown['right']) {
+    if (player1.physics.velocity > -player1.physics.maxspeed) {
+      player1.physics.velocity -= player1.physics.acceloraction;
+    }
+  } else if (keyDown['right'] && !keyDown['left']) {
+    if (player1.physics.velocity < player1.physics.maxspeed) {
+      player1.physics.velocity += player1.physics.acceloraction;
+    }
   }
 
-  setTimeout(tick, TickRate);
+  player1.position.x += player1.physics.velocity;
+  if (keyPressed == false) {
+    player1.physics.velocity =
+      player1.physics.velocity / player1.physics.friction;
+  }
+  if (
+    player1.physics.velocity < player1.physics.minspeed &&
+    player1.physics.velocity > -player1.physics.minspeed
+  ) {
+    player1.physics.velocity = 0;
+  }
+
+  setTimeout(PhysicsUpdateLoop, TickRate);
 };
 
-tick();
+PhysicsUpdateLoop();
+
+setInterval(function debbuger() {
+  console.log(player1.physics.velocity);
+}, 2000);
+
 //____________________________________________________________________________________________________________________________________
 
 function coreAnimationLoop() {
