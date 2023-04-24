@@ -56,7 +56,7 @@ const backgroundLevel1 = new Sprite({
     y: 0,
   },
   imageSrc:
-    'https://cdn.jsdelivr.net/gh/NicPix30/2D-Game-Template@main/backgroundLevel1.png',
+    '',
   size: {
     width: canvas.width,
     height: canvas.height,
@@ -70,7 +70,7 @@ const player1 = new Player({
     y: canvas.height / 1.7,
   },
   imageSrc:
-    'https://cdn.jsdelivr.net/gh/NicPix30/2D-Game-Template@main/box.png',
+    '',
   size: {
     width: canvas.width / 20,
     height: canvas.height / 20,
